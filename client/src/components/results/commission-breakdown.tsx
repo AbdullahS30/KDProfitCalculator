@@ -38,17 +38,6 @@ export default function CommissionBreakdown({ results }: Props) {
             <span>PKR {results.total.toLocaleString()}</span>
           </div>
         </div>
-        <div className="mt-6">
-          <Button 
-            className="w-full" 
-            onClick={() => {
-              // TODO: Implement save functionality
-              alert("Saving scenario... This feature will be implemented soon.");
-            }}
-          >
-            Save Scenario
-          </Button>
-        </div>
       </CardContent>
     </Card>
   );
