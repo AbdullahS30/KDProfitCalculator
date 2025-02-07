@@ -1,0 +1,166 @@
+Understanding the Financial Model
+The financial model in the CSV file is structured around different product categories, each with its own commission calculation method. The key categories are:
+
+Fertilizer Calculator
+
+Direct Inputs Calculator
+
+Product Based Calculator
+
+Crop Sales Calculator
+
+Machine Sales Calculator
+
+Each category has specific inputs and formulas to calculate the total commission. The model also provides a cumulative commission at the end, which sums up the commissions from all categories.
+
+2. Key Inputs and Calculations
+Fertilizer Calculator
+Inputs:
+
+KDL Market Penetration (Acres): Total land area (e.g., 100 acres).
+
+Requirement per Acre: Amount of fertilizer needed per acre (e.g., 3 bags).
+
+Total Requirement as per Acres: Total bags of fertilizer needed (e.g., 300 bags).
+
+Average Commission per Unit: Commission per bag (e.g., PKR 77).
+
+Calculation:
+
+Total Commission = Total Requirement as per Acres * Average Commission per Unit
+
+Example: 300 bags * PKR 77 = PKR 23,100
+
+Direct Inputs Calculator
+Inputs:
+
+KDL Market Penetration (Acres): Total land area (e.g., 100 acres).
+
+Average Gross Sales Value Per Acre: Sales value per acre (e.g., PKR 1,500).
+
+Average Commission Percentage: Commission percentage (e.g., 13.70%).
+
+Calculation:
+
+Total Commission = Total Acres * Average Gross Sales Value Per Acre * Average Commission Percentage
+
+Example: 100 acres * PKR 1,500 * 13.70% = PKR 20,550
+
+Product Based Calculator
+Inputs:
+
+Quantity: Number of products sold (e.g., 50 units).
+
+Average Gross Sales Value: Sales value per unit (e.g., PKR 2,500).
+
+Average Commission Percentage: Commission percentage (e.g., 2.86%).
+
+Calculation:
+
+Total Commission = Quantity * Average Gross Sales Value * Average Commission Percentage
+
+Example: 50 units * PKR 2,500 * 2.86% = PKR 3,575
+
+Crop Sales Calculator
+Inputs:
+
+Paidawar Land Booked (Acres): Total land area (e.g., 100 acres).
+
+Average Yield per Acre (Maunds): Yield per acre (e.g., 40 maunds).
+
+Last Approx Price per Maund: Price per maund (e.g., PKR 3,700).
+
+Average Commission Percentage: Commission percentage (e.g., 0.30%).
+
+Calculation:
+
+Total Commission = Total Acres * Average Yield per Acre * Last Approx Price per Maund * Average Commission Percentage
+
+Example: 100 acres * 40 maunds * PKR 3,700 * 0.30% = PKR 44,400
+
+Machine Sales Calculator
+Inputs:
+
+Machine Orders Booked (Acres): Total land area (e.g., 200 acres).
+
+Average Cost per Acre: Cost per acre (e.g., PKR 6,000).
+
+Average Commission Percentage: Commission percentage (e.g., 2%).
+
+Calculation:
+
+Total Commission = Total Acres * Average Cost per Acre * Average Commission Percentage
+
+Example: 200 acres * PKR 6,000 * 2% = PKR 24,000
+
+3. Cumulative Commission Calculation
+The cumulative commission is the sum of all individual commissions from the different categories. In the example provided, the total cumulative commission is PKR 114,225.
+
+4. Profit Calculation for Licensee
+To calculate the profit for a licensee, you need to consider the total revenue generated from sales and subtract any costs associated with the products. The commission earned by the licensee is part of their profit.
+
+Total Revenue: Sum of revenue from all product categories.
+
+Total Costs: Sum of costs associated with purchasing the products.
+
+Total Commission: Sum of commissions from all categories.
+
+Profit = Total Revenue - Total Costs + Total Commission
+
+5. Building the Calculator
+User Inputs:
+Land Area: Total available land in acres.
+
+Product Mix: Selection of products (fertilizer, seeds, pesticides, machines, crops).
+
+Quantity: Number of units or bags for each product.
+
+Sales Value: Average sales value per unit or per acre.
+
+Calculations:
+For each product category, calculate the total commission using the formulas provided.
+
+Sum up all commissions to get the cumulative commission.
+
+Calculate total revenue and subtract costs to determine profit.
+
+Scenario Planning:
+Allow users to simulate different sales mixes by adjusting the product quantities and sales values.
+
+Show how changes in the product mix affect total commissions and profits.
+
+User Interface:
+Ensure the interface is simple and intuitive, with clear input fields and results displayed prominently.
+
+Provide visualizations (e.g., charts) to help users understand the impact of different scenarios.
+
+6. Example Scenario
+Let's say a licensee has 150 acres of land and wants to sell the following products:
+
+Fertilizer: 450 bags (3 bags per acre) at PKR 77 commission per bag.
+
+Seeds & Pesticides: PKR 1,500 sales value per acre at 13.70% commission.
+
+Crops: 150 acres with 40 maunds per acre at PKR 3,700 per maund and 0.30% commission.
+
+Machines: 150 acres at PKR 6,000 cost per acre and 2% commission.
+
+Calculations:
+
+Fertilizer Commission: 450 * 77 = PKR 34,650
+
+Seeds & Pesticides Commission: 150 * 1,500 * 13.70% = PKR 30,825
+
+Crop Commission: 150 * 40 * 3,700 * 0.30% = PKR 66,600
+
+Machine Commission: 150 * 6,000 * 2% = PKR 18,000
+
+Total Commission: PKR 34,650 + 30,825 + 66,600 + 18,000 = PKR 150,075
+
+Profit Calculation:
+
+Assume total costs are PKR 500,000 and total revenue is PKR 1,200,000.
+
+Profit: 1,200,000 - 500,000 + 150,075 = PKR 850,075
+
+This example demonstrates how the calculator can help licensees estimate their commissions and profits based on their land size and product mix.
