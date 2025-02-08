@@ -2,22 +2,35 @@ import { pgTable, text, serial, integer, decimal } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 
+// Constants for commissions
+export const COMMISSIONS = {
+  FERTILIZER: 77, // PKR per bag
+  DIRECT_INPUTS: 13.70, // Percentage
+  PRODUCT: 2.86, // Percentage
+  CROP: {
+    WHEAT: 0.30,
+    RICE: 0.35,
+    COTTON: 0.40
+  }, // Percentages
+  MACHINE: {
+    TRACTOR: 2.0,
+    THRESHER: 2.5,
+    HARVESTER: 3.0
+  } // Percentages
+} as const;
+
 export const scenarios = pgTable("scenarios", {
   id: serial("id").primaryKey(),
-  name: text("name").notNull(),
   landArea: decimal("land_area").notNull(),
+  fertilizerType: text("fertilizer_type").notNull(),
+  fertilizerBrand: text("fertilizer_brand").notNull(),
   fertilizerBagsPerAcre: decimal("fertilizer_bags_per_acre").notNull(),
-  fertilizerCommissionPerUnit: decimal("fertilizer_commission_per_unit").notNull(),
   directInputsSalesPerAcre: decimal("direct_inputs_sales_per_acre").notNull(),
-  directInputsCommissionPercent: decimal("direct_inputs_commission_percent").notNull(),
   productQuantity: integer("product_quantity").notNull(),
   productSalesValue: decimal("product_sales_value").notNull(),
-  productCommissionPercent: decimal("product_commission_percent").notNull(),
+  cropType: text("crop_type").notNull(),
   cropYieldPerAcre: decimal("crop_yield_per_acre").notNull(),
-  cropPricePerMaund: decimal("crop_price_per_maund").notNull(),
-  cropCommissionPercent: decimal("crop_commission_percent").notNull(),
-  machineCostPerAcre: decimal("machine_cost_per_acre").notNull(),
-  machineCommissionPercent: decimal("machine_commission_percent").notNull()
+  machineType: text("machine_type").notNull(),
 });
 
 export const insertScenarioSchema = createInsertSchema(scenarios);
@@ -26,18 +39,20 @@ export type Scenario = typeof scenarios.$inferSelect;
 
 export const calculatorInputSchema = z.object({
   landArea: z.number().min(0),
+  fertilizerType: z.string(),
+  fertilizerBrand: z.string(),
   fertilizerBagsPerAcre: z.number().min(0),
-  fertilizerCommissionPerUnit: z.number().min(0),
   directInputsSalesPerAcre: z.number().min(0),
-  directInputsCommissionPercent: z.number().min(0).max(100),
   productQuantity: z.number().min(0),
   productSalesValue: z.number().min(0),
-  productCommissionPercent: z.number().min(0).max(100),
+  cropType: z.string(),
   cropYieldPerAcre: z.number().min(0),
-  cropPricePerMaund: z.number().min(0),
-  cropCommissionPercent: z.number().min(0).max(100),
-  machineCostPerAcre: z.number().min(0),
-  machineCommissionPercent: z.number().min(0).max(100)
+  machineType: z.string(),
 });
 
 export type CalculatorInput = z.infer<typeof calculatorInputSchema>;
+
+export const CROP_TYPES = ["Wheat", "Rice", "Cotton"] as const;
+export const MACHINE_TYPES = ["Tractor", "Thresher", "Harvester"] as const;
+export const FERTILIZER_TYPES = ["Urea", "DAP", "SOP", "NP"] as const;
+export const FERTILIZER_BRANDS = ["Engro", "FFC", "Fatima"] as const;

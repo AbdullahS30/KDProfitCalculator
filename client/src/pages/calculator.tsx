@@ -12,34 +12,33 @@ import type { CalculatorInput } from "@shared/schema";
 export default function Calculator() {
   const [calculatorData, setCalculatorData] = useState<CalculatorInput>({
     landArea: 0,
+    fertilizerType: '',
+    fertilizerBrand: '',
     fertilizerBagsPerAcre: 0,
-    fertilizerCommissionPerUnit: 0,
     directInputsSalesPerAcre: 0,
-    directInputsCommissionPercent: 0,
     productQuantity: 0,
     productSalesValue: 0,
-    productCommissionPercent: 0,
+    cropType: '',
     cropYieldPerAcre: 0,
+    machineType: '',
     cropPricePerMaund: 0,
-    cropCommissionPercent: 0,
     machineCostPerAcre: 0,
-    machineCommissionPercent: 0
   });
 
   return (
     <div className="container mx-auto px-4 py-8">
       <h1 className="text-3xl font-bold mb-8">KDukaan Profit Calculator</h1>
-      
+
       <div className="grid md:grid-cols-2 gap-8">
         <Card>
           <CardContent className="p-6">
             <Tabs defaultValue="fertilizer" className="w-full">
-              <TabsList className="grid w-full grid-cols-3 lg:grid-cols-5">
-                <TabsTrigger value="fertilizer">Fertilizer</TabsTrigger>
-                <TabsTrigger value="direct">Direct Inputs</TabsTrigger>
-                <TabsTrigger value="product">Products</TabsTrigger>
-                <TabsTrigger value="crop">Crop Sales</TabsTrigger>
-                <TabsTrigger value="machine">Machines</TabsTrigger>
+              <TabsList className="grid w-full grid-cols-5">
+                <TabsTrigger value="fertilizer" className="text-sm">Fertilizer</TabsTrigger>
+                <TabsTrigger value="direct" className="text-sm">Direct Inputs</TabsTrigger>
+                <TabsTrigger value="product" className="text-sm">Products</TabsTrigger>
+                <TabsTrigger value="crop" className="text-sm whitespace-nowrap">Crop Sales</TabsTrigger>
+                <TabsTrigger value="machine" className="text-sm whitespace-nowrap">Machines</TabsTrigger>
               </TabsList>
 
               <TabsContent value="fertilizer">

@@ -1,6 +1,7 @@
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import type { CalculatorInput } from "@shared/schema";
+import { COMMISSIONS } from "@shared/schema";
 
 interface Props {
   data: CalculatorInput;
@@ -18,7 +19,7 @@ export default function DirectInputsCalculator({ data, onChange }: Props) {
   };
 
   const totalSales = data.landArea * data.directInputsSalesPerAcre;
-  const totalCommission = totalSales * (data.directInputsCommissionPercent / 100);
+  const totalCommission = totalSales * (COMMISSIONS.DIRECT_INPUTS / 100);
 
   return (
     <div className="space-y-4 py-4">
@@ -44,21 +45,12 @@ export default function DirectInputsCalculator({ data, onChange }: Props) {
         />
       </div>
 
-      <div className="space-y-2">
-        <Label htmlFor="commissionPercent">Commission Percentage (%)</Label>
-        <Input
-          id="commissionPercent"
-          type="number"
-          min="0"
-          max="100"
-          value={data.directInputsCommissionPercent || ''}
-          onChange={handleChange('directInputsCommissionPercent')}
-        />
-      </div>
-
       <div className="mt-6 pt-4 border-t">
         <div className="text-sm text-muted-foreground">
           Total Sales: PKR {totalSales.toFixed(2)}
+        </div>
+        <div className="text-sm text-muted-foreground mt-1">
+          Commission Rate: {COMMISSIONS.DIRECT_INPUTS}%
         </div>
         <div className="text-lg font-semibold mt-2">
           Commission: PKR {totalCommission.toFixed(2)}
