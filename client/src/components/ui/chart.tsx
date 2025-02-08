@@ -1,6 +1,6 @@
 import * as React from "react"
 import * as RechartsPrimitive from "recharts"
-
+import { ResponsiveContainer, BarChart as RechartsBarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip } from "recharts"
 import { cn } from "@/lib/utils"
 
 // Format: { THEME_NAME: CSS_SELECTOR }
@@ -360,4 +360,76 @@ export {
   ChartLegend,
   ChartLegendContent,
   ChartStyle,
+}
+
+interface BarChartProps {
+  data: any[]
+  index: string
+  categories: string[]
+  colors?: string[]
+  valueFormatter?: (value: number) => string
+  yAxisWidth?: number
+}
+
+export function BarChart({
+  data,
+  index,
+  categories,
+  colors = ["chart.1"],
+  valueFormatter = (value: number) => value.toString(),
+  yAxisWidth = 56,
+}: BarChartProps) {
+  return (
+    <div className="w-full h-[350px]">
+      <ResponsiveContainer width="100%" height="100%">
+        <RechartsBarChart data={data} margin={{ top: 16, right: 16, bottom: 16, left: 16 }}>
+          <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
+          <XAxis
+            dataKey={index}
+            stroke="hsl(var(--muted-foreground))"
+            fontSize={12}
+            tickLine={false}
+            axisLine={false}
+          />
+          <YAxis
+            width={yAxisWidth}
+            stroke="hsl(var(--muted-foreground))"
+            fontSize={12}
+            tickLine={false}
+            axisLine={false}
+            tickFormatter={valueFormatter}
+          />
+          <Tooltip
+            content={({ active, payload }) => {
+              if (!active || !payload) return null
+              return (
+                <div className="rounded-lg border bg-background p-2 shadow-sm">
+                  <div className="grid grid-cols-2 gap-2">
+                    {payload.map((category: any, i: number) => (
+                      <div key={i} className="flex flex-col">
+                        <span className="text-[0.70rem] uppercase text-muted-foreground">
+                          {category.name}
+                        </span>
+                        <span className="font-bold text-muted-foreground">
+                          {valueFormatter(category.value)}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )
+            }}
+          />
+          {categories.map((category, i) => (
+            <Bar
+              key={category}
+              dataKey={category}
+              fill={`hsl(var(--${colors[i % colors.length]}))`}
+              radius={[4, 4, 0, 0]}
+            />
+          ))}
+        </RechartsBarChart>
+      </ResponsiveContainer>
+    </div>
+  )
 }
