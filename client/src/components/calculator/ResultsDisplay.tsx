@@ -1,27 +1,49 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { BarChart } from "@/components/ui/chart";
 import type { CalculatorInput } from "@shared/schema";
+import { COMMISSIONS } from "@shared/schema";
 
 interface Props {
   data: CalculatorInput;
 }
 
 export default function ResultsDisplay({ data }: Props) {
-  // Calculate commissions
-  const fertilizerCommission = 
-    data.landArea * data.fertilizerBagsPerAcre * data.fertilizerCommissionPerUnit;
-  
-  const directInputsCommission = 
-    data.landArea * data.directInputsSalesPerAcre * (data.directInputsCommissionPercent / 100);
-  
-  const productCommission = 
-    data.productQuantity * data.productSalesValue * (data.productCommissionPercent / 100);
-  
-  const cropCommission = 
-    data.landArea * data.cropYieldPerAcre * data.cropPricePerMaund * (data.cropCommissionPercent / 100);
-  
-  const machineCommission = 
-    data.landArea * data.machineCostPerAcre * (data.machineCommissionPercent / 100);
+  // Calculate total commission for each category
+  const fertilizerCommission = data.fertilizerEntries.reduce((total, entry) => {
+    const totalBags = entry.landArea * entry.bagsPerAcre;
+    return total + (totalBags * COMMISSIONS.FERTILIZER);
+  }, 0);
+
+  const directInputsCommission = data.directInputEntries.reduce((total, entry) => {
+    const totalSales = entry.landArea * entry.salesPerAcre;
+    const commissionRate = COMMISSIONS.DIRECT_INPUTS[entry.type.toUpperCase().replace(' ', '_') as keyof typeof COMMISSIONS.DIRECT_INPUTS];
+    return total + (totalSales * commissionRate / 100);
+  }, 0);
+
+  const productCommission = data.productEntries.reduce((total, entry) => {
+    const totalSales = entry.quantity * entry.salesValue;
+    const commissionRate = COMMISSIONS.PRODUCT[entry.type.toUpperCase().replace(' ', '_') as keyof typeof COMMISSIONS.PRODUCT];
+    return total + (totalSales * commissionRate / 100);
+  }, 0);
+
+  const cropCommission = data.cropEntries.reduce((total, entry) => {
+    const totalYield = entry.landArea * entry.yieldPerAcre;
+    const commissionRate = COMMISSIONS.CROP[entry.type.toUpperCase() as keyof typeof COMMISSIONS.CROP];
+    return total + (totalYield * entry.pricePerMaund * commissionRate);
+  }, 0);
+
+  const machineCommission = data.machineEntries.reduce((total, entry) => {
+    const commissionRate = COMMISSIONS.MACHINE[entry.type.toUpperCase().replace(' ', '_') as keyof typeof COMMISSIONS.MACHINE];
+    const machineCosts = {
+      HARVESTER: 8000,
+      THRESHER: 4500,
+      TROLLEY: 3000,
+      RICE_PLANTER: 5000
+    };
+    const costPerAcre = machineCosts[entry.type.toUpperCase().replace(' ', '_') as keyof typeof machineCosts] || 0;
+    const totalCost = entry.landArea * costPerAcre;
+    return total + (totalCost * commissionRate / 100);
+  }, 0);
 
   const totalCommission = 
     fertilizerCommission + directInputsCommission + productCommission + 
