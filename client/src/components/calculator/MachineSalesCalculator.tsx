@@ -1,8 +1,13 @@
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import type { CalculatorInput } from "@shared/schema";
-import { MACHINE_TYPES, COMMISSIONS } from "@shared/schema";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { Plus, X } from "lucide-react";
+import type { CalculatorInput, MachineEntry } from "@shared/schema";
+import { COMMISSIONS } from "@shared/schema";
+import { v4 as uuidv4 } from 'uuid';
+import { ImageSelector } from "@/components/ui/image-selector";
+import { machineOptions } from "@/lib/image-options";
 
 interface Props {
   data: CalculatorInput;
@@ -10,86 +15,125 @@ interface Props {
 }
 
 const MACHINE_COSTS = {
-  TRACTOR: 6000,
+  HARVESTER: 8000,
   THRESHER: 4500,
-  HARVESTER: 8000
+  TROLLEY: 3000,
+  RICE_PLANTER: 5000
 } as const;
 
 export default function MachineSalesCalculator({ data, onChange }: Props) {
-  const handleChange = (field: keyof CalculatorInput) => (
-    e: React.ChangeEvent<HTMLInputElement>
-  ) => {
+  const addEntry = () => {
     onChange({
       ...data,
-      [field]: parseFloat(e.target.value) || 0
+      machineEntries: [
+        ...data.machineEntries,
+        {
+          id: uuidv4(),
+          type: 'Harvester',
+          landArea: 0,
+        }
+      ]
     });
   };
 
-  const handleMachineChange = (value: string) => {
+  const removeEntry = (id: string) => {
     onChange({
       ...data,
-      machineType: value
+      machineEntries: data.machineEntries.filter(entry => entry.id !== id)
     });
   };
 
-  const getMachineCost = () => {
-    const machineType = data.machineType.toUpperCase() as keyof typeof MACHINE_COSTS;
-    return MACHINE_COSTS[machineType] || 0;
+  const updateEntry = (id: string, field: keyof MachineEntry, value: string | number) => {
+    onChange({
+      ...data,
+      machineEntries: data.machineEntries.map(entry => 
+        entry.id === id ? { ...entry, [field]: value } : entry
+      )
+    });
   };
 
-  const getCommissionRate = () => {
-    const machineType = data.machineType.toUpperCase() as keyof typeof COMMISSIONS.MACHINE;
-    return COMMISSIONS.MACHINE[machineType] || 0;
+  const getMachineCost = (type: string) => {
+    return MACHINE_COSTS[type.toUpperCase().replace(' ', '_') as keyof typeof MACHINE_COSTS] || 0;
   };
 
-  const machineCost = getMachineCost();
-  const totalCost = data.landArea * machineCost;
-  const commissionRate = getCommissionRate();
-  const totalCommission = totalCost * (commissionRate / 100);
+  const getCommissionRate = (type: string) => {
+    return COMMISSIONS.MACHINE[type.toUpperCase().replace(' ', '_') as keyof typeof COMMISSIONS.MACHINE] || 0;
+  };
+
+  const calculateCommission = (entry: MachineEntry) => {
+    const machineCost = getMachineCost(entry.type);
+    const totalCost = entry.landArea * machineCost;
+    const commissionRate = getCommissionRate(entry.type);
+    return totalCost * (commissionRate / 100);
+  };
 
   return (
     <div className="space-y-4 py-4">
-      <div className="space-y-2">
-        <Label htmlFor="machineType">Machine Type</Label>
-        <Select
-          value={data.machineType}
-          onValueChange={handleMachineChange}
-        >
-          <SelectTrigger>
-            <SelectValue placeholder="Select machine" />
-          </SelectTrigger>
-          <SelectContent>
-            {MACHINE_TYPES.map(machine => (
-              <SelectItem key={machine} value={machine}>{machine}</SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
+      <div className="flex justify-between items-center mb-4">
+        <h3 className="text-lg font-medium">Machine Entries</h3>
+        <Button onClick={addEntry} size="sm" variant="outline" className="flex items-center gap-2">
+          <Plus className="h-4 w-4" />
+          Add Machine
+        </Button>
       </div>
 
-      <div className="space-y-2">
-        <Label htmlFor="landArea">Land Area (Acres)</Label>
-        <Input
-          id="landArea"
-          type="number"
-          min="0"
-          value={data.landArea || ''}
-          onChange={handleChange('landArea')}
-        />
-      </div>
+      <div className="space-y-4">
+        {data.machineEntries.map((entry) => (
+          <Card key={entry.id} className="relative">
+            <Button
+              variant="ghost"
+              size="icon"
+              className="absolute right-2 top-2"
+              onClick={() => removeEntry(entry.id)}
+            >
+              <X className="h-4 w-4" />
+            </Button>
 
-      <div className="mt-6 pt-4 border-t">
-        <div className="text-sm text-muted-foreground">
-          Cost per Acre: PKR {machineCost.toFixed(2)}
-        </div>
-        <div className="text-sm text-muted-foreground">
-          Total Cost: PKR {totalCost.toFixed(2)}
-        </div>
-        <div className="text-sm text-muted-foreground mt-1">
-          Commission Rate: {commissionRate}%
-        </div>
-        <div className="text-lg font-semibold mt-2">
-          Commission: PKR {totalCommission.toFixed(2)}
-        </div>
+            <CardContent className="pt-6">
+              <div className="grid gap-4">
+                <div className="space-y-2">
+                  <Label>Machine Type</Label>
+                  <ImageSelector
+                    options={machineOptions}
+                    value={entry.type}
+                    onChange={(value) => updateEntry(entry.id, 'type', value)}
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label>Land Area (Acres)</Label>
+                  <Input
+                    type="number"
+                    min="0"
+                    value={entry.landArea || ''}
+                    onChange={(e) => updateEntry(entry.id, 'landArea', parseFloat(e.target.value) || 0)}
+                  />
+                </div>
+              </div>
+
+              <div className="mt-4 pt-4 border-t">
+                <div className="text-sm text-muted-foreground">
+                  Cost per Acre: PKR {getMachineCost(entry.type).toFixed(2)}
+                </div>
+                <div className="text-sm text-muted-foreground">
+                  Total Cost: PKR {(entry.landArea * getMachineCost(entry.type)).toFixed(2)}
+                </div>
+                <div className="text-sm text-muted-foreground mt-1">
+                  Commission Rate: {getCommissionRate(entry.type)}%
+                </div>
+                <div className="text-lg font-semibold mt-2">
+                  Commission: PKR {calculateCommission(entry).toFixed(2)}
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        ))}
+
+        {data.machineEntries.length === 0 && (
+          <div className="text-center py-8 text-muted-foreground">
+            No machine entries yet. Click the button above to add one.
+          </div>
+        )}
       </div>
     </div>
   );
