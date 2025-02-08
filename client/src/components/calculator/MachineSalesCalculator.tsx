@@ -6,7 +6,7 @@ import { Plus, X } from "lucide-react";
 import type { CalculatorInput, MachineEntry } from "@shared/schema";
 import { COMMISSIONS } from "@shared/schema";
 import { v4 as uuidv4 } from 'uuid';
-import { ImageSelector } from "@/components/ui/image-selector";
+import { ImageSelectorDialog } from "@/components/ui/image-selector-dialog";
 import { machineOptions } from "@/lib/image-options";
 
 interface Props {
@@ -93,10 +93,11 @@ export default function MachineSalesCalculator({ data, onChange }: Props) {
               <div className="grid gap-4">
                 <div className="space-y-2">
                   <Label>Machine Type</Label>
-                  <ImageSelector
+                  <ImageSelectorDialog
                     options={machineOptions}
                     value={entry.type}
                     onChange={(value) => updateEntry(entry.id, 'type', value)}
+                    triggerText="Select machine"
                   />
                 </div>
 

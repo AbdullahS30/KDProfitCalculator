@@ -47,18 +47,18 @@ export function ImageSelectorDialog({
           {selectedOption && <Check className="w-4 h-4 ml-2" />}
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[800px]">
-        <div className="space-y-4">
+      <DialogContent className="sm:max-w-[800px] max-h-[80vh] flex flex-col p-6">
+        <div className="flex-1 min-h-0 overflow-y-auto">
           <ImageSelector
             options={options}
             value={tempValue}
             onChange={setTempValue}
           />
-          <div className="flex justify-end">
-            <Button onClick={handleDone}>
-              Done
-            </Button>
-          </div>
+        </div>
+        <div className="pt-6 flex justify-end border-t mt-6">
+          <Button onClick={handleDone}>
+            Done
+          </Button>
         </div>
       </DialogContent>
     </Dialog>
