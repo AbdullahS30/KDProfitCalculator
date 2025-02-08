@@ -1,12 +1,13 @@
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Card, CardContent } from "@/components/ui/card";
 import { Plus, X } from "lucide-react";
 import type { CalculatorInput, DirectInputEntry } from "@shared/schema";
-import { DIRECT_INPUT_TYPES, COMMISSIONS } from "@shared/schema";
+import { COMMISSIONS } from "@shared/schema";
 import { v4 as uuidv4 } from 'uuid';
+import { ImageSelectorDialog } from "@/components/ui/image-selector-dialog";
+import { directInputOptions } from "@/lib/image-options";
 
 interface Props {
   data: CalculatorInput;
@@ -77,19 +78,12 @@ export default function DirectInputsCalculator({ data, onChange }: Props) {
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label>Type</Label>
-                  <Select
+                  <ImageSelectorDialog
+                    options={directInputOptions}
                     value={entry.type}
-                    onValueChange={(value) => updateEntry(entry.id, 'type', value)}
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select type" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {DIRECT_INPUT_TYPES.map(type => (
-                        <SelectItem key={type} value={type}>{type}</SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+                    onChange={(value) => updateEntry(entry.id, 'type', value)}
+                    triggerText="Select type"
+                  />
                 </div>
 
                 <div className="space-y-2">

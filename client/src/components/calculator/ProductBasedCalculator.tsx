@@ -1,12 +1,13 @@
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Card, CardContent } from "@/components/ui/card";
 import { Plus, X } from "lucide-react";
 import type { CalculatorInput, ProductEntry } from "@shared/schema";
-import { PRODUCT_TYPES, COMMISSIONS } from "@shared/schema";
+import { COMMISSIONS } from "@shared/schema";
 import { v4 as uuidv4 } from 'uuid';
+import { ImageSelectorDialog } from "@/components/ui/image-selector-dialog";
+import { productOptions } from "@/lib/image-options";
 
 interface Props {
   data: CalculatorInput;
@@ -39,7 +40,7 @@ export default function ProductBasedCalculator({ data, onChange }: Props) {
   const updateEntry = (id: string, field: keyof ProductEntry, value: string | number) => {
     onChange({
       ...data,
-      productEntries: data.productEntries.map(entry => 
+      productEntries: data.productEntries.map(entry =>
         entry.id === id ? { ...entry, [field]: value } : entry
       )
     });
@@ -77,19 +78,12 @@ export default function ProductBasedCalculator({ data, onChange }: Props) {
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label>Product Type</Label>
-                  <Select
+                  <ImageSelectorDialog
+                    options={productOptions}
                     value={entry.type}
-                    onValueChange={(value) => updateEntry(entry.id, 'type', value)}
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select type" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {PRODUCT_TYPES.map(type => (
-                        <SelectItem key={type} value={type}>{type}</SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+                    onChange={(value) => updateEntry(entry.id, 'type', value)}
+                    triggerText="Select product"
+                  />
                 </div>
 
                 <div className="space-y-2">
