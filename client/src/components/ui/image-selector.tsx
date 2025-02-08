@@ -1,3 +1,5 @@
+"use client";
+
 import { useState } from "react";
 import { cn } from "@/lib/utils";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
@@ -35,10 +37,9 @@ export function ImageSelector({ options, value, onChange, className }: ImageSele
             onMouseEnter={() => setHoveredId(option.id)}
             onMouseLeave={() => setHoveredId(null)}
           >
-            <img
-              src={option.image}
-              alt={option.label}
-              className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
+            <div
+              className="h-full w-full bg-no-repeat bg-cover bg-center transition-transform duration-500 group-hover:scale-110"
+              style={{ backgroundImage: `url(${option.image})` }}
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
             <p className="absolute bottom-2 left-2 text-sm font-medium text-white">
