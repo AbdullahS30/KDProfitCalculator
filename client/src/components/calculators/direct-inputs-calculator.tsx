@@ -13,10 +13,11 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 
 const formSchema = z.object({
-  marketPenetration: z.number().min(0),
-  avgSalesValuePerAcre: z.number().min(0),
-  avgCommissionPercentage: z.number().min(0).max(100),
+  acres: z.number().min(0),
+  avgGrossSalesValuePerAcre: z.number().min(0),
 });
+
+const DIRECT_INPUTS_COMMISSION_PERCENTAGE = 2.5; // Hardcoded commission percentage
 
 type Props = {
   onCalculate: (commission: number) => void;
@@ -26,17 +27,13 @@ export default function DirectInputsCalculator({ onCalculate }: Props) {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      marketPenetration: 0,
-      avgSalesValuePerAcre: 0,
-      avgCommissionPercentage: 0,
+      acres: 0,
+      avgGrossSalesValuePerAcre: 0,
     },
   });
 
   function onSubmit(values: z.infer<typeof formSchema>) {
-    const commission = 
-      values.marketPenetration * 
-      values.avgSalesValuePerAcre * 
-      (values.avgCommissionPercentage / 100);
+    const commission = values.acres * values.avgGrossSalesValuePerAcre * (DIRECT_INPUTS_COMMISSION_PERCENTAGE / 100);
     onCalculate(commission);
   }
 
@@ -45,10 +42,10 @@ export default function DirectInputsCalculator({ onCalculate }: Props) {
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
         <FormField
           control={form.control}
-          name="marketPenetration"
+          name="acres"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>KDL Market Penetration (Acres)</FormLabel>
+              <FormLabel>Acres</FormLabel>
               <FormControl>
                 <Input
                   type="number"
@@ -63,28 +60,10 @@ export default function DirectInputsCalculator({ onCalculate }: Props) {
 
         <FormField
           control={form.control}
-          name="avgSalesValuePerAcre"
+          name="avgGrossSalesValuePerAcre"
           render={({ field }) => (
             <FormItem>
               <FormLabel>Average Gross Sales Value Per Acre (PKR)</FormLabel>
-              <FormControl>
-                <Input
-                  type="number"
-                  {...field}
-                  onChange={(e) => field.onChange(Number(e.target.value))}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={form.control}
-          name="avgCommissionPercentage"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Average Commission Percentage (%)</FormLabel>
               <FormControl>
                 <Input
                   type="number"

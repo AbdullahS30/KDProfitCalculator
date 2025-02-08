@@ -11,12 +11,17 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 const formSchema = z.object({
-  ordersBooked: z.number().min(0),
-  avgCostPerAcre: z.number().min(0),
-  avgCommissionPercentage: z.number().min(0).max(100),
+  machineType: z.string(),
+  acres: z.number().min(0),
 });
+
+const MACHINE_COSTS = {
+  tractor: { costPerAcre: 2500, commission: 2.0 },
+  thresher: { costPerAcre: 3000, commission: 2.5 },
+} as const;
 
 type Props = {
   onCalculate: (commission: number) => void;
@@ -26,17 +31,14 @@ export default function MachineSalesCalculator({ onCalculate }: Props) {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      ordersBooked: 0,
-      avgCostPerAcre: 0,
-      avgCommissionPercentage: 0,
+      machineType: "tractor",
+      acres: 0,
     },
   });
 
   function onSubmit(values: z.infer<typeof formSchema>) {
-    const commission = 
-      values.ordersBooked * 
-      values.avgCostPerAcre * 
-      (values.avgCommissionPercentage / 100);
+    const machineInfo = MACHINE_COSTS[values.machineType as keyof typeof MACHINE_COSTS];
+    const commission = values.acres * machineInfo.costPerAcre * (machineInfo.commission / 100);
     onCalculate(commission);
   }
 
@@ -45,17 +47,21 @@ export default function MachineSalesCalculator({ onCalculate }: Props) {
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
         <FormField
           control={form.control}
-          name="ordersBooked"
+          name="machineType"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Machine Orders Booked (Acres)</FormLabel>
-              <FormControl>
-                <Input
-                  type="number"
-                  {...field}
-                  onChange={(e) => field.onChange(Number(e.target.value))}
-                />
-              </FormControl>
+              <FormLabel>Type of Machine</FormLabel>
+              <Select onValueChange={field.onChange} defaultValue={field.value}>
+                <FormControl>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select machine type" />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  <SelectItem value="tractor">Tractor</SelectItem>
+                  <SelectItem value="thresher">Thresher</SelectItem>
+                </SelectContent>
+              </Select>
               <FormMessage />
             </FormItem>
           )}
@@ -63,28 +69,10 @@ export default function MachineSalesCalculator({ onCalculate }: Props) {
 
         <FormField
           control={form.control}
-          name="avgCostPerAcre"
+          name="acres"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Average Cost per Acre (PKR)</FormLabel>
-              <FormControl>
-                <Input
-                  type="number"
-                  {...field}
-                  onChange={(e) => field.onChange(Number(e.target.value))}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={form.control}
-          name="avgCommissionPercentage"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Average Commission Percentage (%)</FormLabel>
+              <FormLabel>Acres</FormLabel>
               <FormControl>
                 <Input
                   type="number"
