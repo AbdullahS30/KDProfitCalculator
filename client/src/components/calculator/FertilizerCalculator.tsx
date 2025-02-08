@@ -1,12 +1,13 @@
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Card, CardContent } from "@/components/ui/card";
 import { Plus, X } from "lucide-react";
 import type { CalculatorInput, FertilizerEntry } from "@shared/schema";
-import { FERTILIZER_TYPES, FERTILIZER_BRANDS, COMMISSIONS } from "@shared/schema";
+import { COMMISSIONS } from "@shared/schema";
 import { v4 as uuidv4 } from 'uuid';
+import { ImageSelectorDialog } from "@/components/ui/image-selector-dialog";
+import { fertilizerOptions, brandOptions } from "@/lib/image-options";
 
 interface Props {
   data: CalculatorInput;
@@ -77,36 +78,22 @@ export default function FertilizerCalculator({ data, onChange }: Props) {
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label>Type of Fertilizer</Label>
-                  <Select
+                  <ImageSelectorDialog
+                    options={fertilizerOptions}
                     value={entry.type}
-                    onValueChange={(value) => updateEntry(entry.id, 'type', value)}
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select type" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {FERTILIZER_TYPES.map(type => (
-                        <SelectItem key={type} value={type}>{type}</SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+                    onChange={(value) => updateEntry(entry.id, 'type', value)}
+                    triggerText="Select type"
+                  />
                 </div>
 
                 <div className="space-y-2">
                   <Label>Brand</Label>
-                  <Select
+                  <ImageSelectorDialog
+                    options={brandOptions}
                     value={entry.brand}
-                    onValueChange={(value) => updateEntry(entry.id, 'brand', value)}
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select brand" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {FERTILIZER_BRANDS.map(brand => (
-                        <SelectItem key={brand} value={brand}>{brand}</SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+                    onChange={(value) => updateEntry(entry.id, 'brand', value)}
+                    triggerText="Select brand"
+                  />
                 </div>
 
                 <div className="space-y-2">
