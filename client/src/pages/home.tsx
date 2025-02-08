@@ -43,7 +43,9 @@ export default function Home() {
               <p className="text-sm text-muted-foreground mb-4">
                 View and compare your previously saved scenarios
               </p>
-              <Button variant="outline" className="w-full">View Scenarios</Button>
+              <Link href="/scenarios">
+                <Button variant="outline" className="w-full">View Scenarios</Button>
+              </Link>
             </CardContent>
           </Card>
 
