@@ -30,11 +30,11 @@ export default function Calculator() {
           </p>
         </header>
 
-        <div className="grid gap-8 md:grid-cols-[2fr,1fr]">
-          <div className="space-y-6">
+        <div className="grid gap-8 lg:grid-cols-[2fr,1fr]">
+          <div className="space-y-6 order-2 lg:order-1">
             <Card className="p-6">
               <Tabs defaultValue="fertilizer">
-                <TabsList className="grid w-full grid-cols-2 md:grid-cols-5">
+                <TabsList className="flex w-full overflow-x-auto snap-x snap-mandatory md:grid md:grid-cols-5">
                   <TabsTrigger value="fertilizer">Fertilizer</TabsTrigger>
                   <TabsTrigger value="direct-inputs">Direct Inputs</TabsTrigger>
                   <TabsTrigger value="products">Products</TabsTrigger>

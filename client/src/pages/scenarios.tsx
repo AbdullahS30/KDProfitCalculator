@@ -36,8 +36,9 @@ export default function Scenarios() {
             {isLoading ? (
               <p>Loading scenarios...</p>
             ) : (
-              <Table>
-                <TableHeader>
+              <div className="overflow-x-auto">
+                <Table>
+                  <TableHeader>
                   <TableRow>
                     <TableHead>Name</TableHead>
                     <TableHead>Land Area</TableHead>
@@ -62,6 +63,7 @@ export default function Scenarios() {
                   ))}
                 </TableBody>
               </Table>
+              </div>
             )}
           </CardContent>
         </Card>
