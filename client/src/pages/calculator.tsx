@@ -11,18 +11,11 @@ import type { CalculatorInput } from "@shared/schema";
 
 export default function Calculator() {
   const [calculatorData, setCalculatorData] = useState<CalculatorInput>({
-    landArea: 0,
-    fertilizerType: '',
-    fertilizerBrand: '',
-    fertilizerBagsPerAcre: 0,
-    directInputsSalesPerAcre: 0,
-    productQuantity: 0,
-    productSalesValue: 0,
-    cropType: '',
-    cropYieldPerAcre: 0,
-    machineType: '',
-    cropPricePerMaund: 0,
-    machineCostPerAcre: 0,
+    fertilizerEntries: [],
+    directInputEntries: [],
+    productEntries: [],
+    cropEntries: [],
+    machineEntries: [],
   });
 
   return (

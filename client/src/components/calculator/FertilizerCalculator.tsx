@@ -1,8 +1,12 @@
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import type { CalculatorInput } from "@shared/schema";
+import { Card, CardContent } from "@/components/ui/card";
+import { Plus, X } from "lucide-react";
+import type { CalculatorInput, FertilizerEntry } from "@shared/schema";
 import { FERTILIZER_TYPES, FERTILIZER_BRANDS, COMMISSIONS } from "@shared/schema";
+import { v4 as uuidv4 } from 'uuid';
 
 interface Props {
   data: CalculatorInput;
@@ -10,93 +14,142 @@ interface Props {
 }
 
 export default function FertilizerCalculator({ data, onChange }: Props) {
-  const handleChange = (field: keyof CalculatorInput) => (
-    e: React.ChangeEvent<HTMLInputElement>
-  ) => {
+  const addEntry = () => {
     onChange({
       ...data,
-      [field]: parseFloat(e.target.value) || 0
+      fertilizerEntries: [
+        ...data.fertilizerEntries,
+        {
+          id: uuidv4(),
+          type: '',
+          brand: '',
+          bagsPerAcre: 0,
+          landArea: 0,
+        }
+      ]
     });
   };
 
-  const handleSelectChange = (field: keyof CalculatorInput) => (value: string) => {
+  const removeEntry = (id: string) => {
     onChange({
       ...data,
-      [field]: value
+      fertilizerEntries: data.fertilizerEntries.filter(entry => entry.id !== id)
     });
   };
 
-  const totalBags = data.landArea * data.fertilizerBagsPerAcre;
-  const totalCommission = totalBags * COMMISSIONS.FERTILIZER;
+  const updateEntry = (id: string, field: keyof FertilizerEntry, value: string | number) => {
+    onChange({
+      ...data,
+      fertilizerEntries: data.fertilizerEntries.map(entry => 
+        entry.id === id ? { ...entry, [field]: value } : entry
+      )
+    });
+  };
+
+  const calculateCommission = (entry: FertilizerEntry) => {
+    const totalBags = entry.landArea * entry.bagsPerAcre;
+    return totalBags * COMMISSIONS.FERTILIZER;
+  };
 
   return (
     <div className="space-y-4 py-4">
-      <div className="space-y-2">
-        <Label htmlFor="landArea">Land Area (Acres)</Label>
-        <Input
-          id="landArea"
-          type="number"
-          min="0"
-          value={data.landArea || ''}
-          onChange={handleChange('landArea')}
-        />
+      <div className="flex justify-between items-center mb-4">
+        <h3 className="text-lg font-medium">Fertilizer Entries</h3>
+        <Button onClick={addEntry} size="sm" variant="outline" className="flex items-center gap-2">
+          <Plus className="h-4 w-4" />
+          Add Fertilizer
+        </Button>
       </div>
 
-      <div className="space-y-2">
-        <Label htmlFor="fertilizerType">Type of Fertilizer</Label>
-        <Select
-          value={data.fertilizerType}
-          onValueChange={handleSelectChange('fertilizerType')}
-        >
-          <SelectTrigger>
-            <SelectValue placeholder="Select type" />
-          </SelectTrigger>
-          <SelectContent>
-            {FERTILIZER_TYPES.map(type => (
-              <SelectItem key={type} value={type}>{type}</SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-      </div>
+      <div className="space-y-4">
+        {data.fertilizerEntries.map((entry) => (
+          <Card key={entry.id} className="relative">
+            <Button
+              variant="ghost"
+              size="icon"
+              className="absolute right-2 top-2"
+              onClick={() => removeEntry(entry.id)}
+            >
+              <X className="h-4 w-4" />
+            </Button>
 
-      <div className="space-y-2">
-        <Label htmlFor="fertilizerBrand">Brand</Label>
-        <Select
-          value={data.fertilizerBrand}
-          onValueChange={handleSelectChange('fertilizerBrand')}
-        >
-          <SelectTrigger>
-            <SelectValue placeholder="Select brand" />
-          </SelectTrigger>
-          <SelectContent>
-            {FERTILIZER_BRANDS.map(brand => (
-              <SelectItem key={brand} value={brand}>{brand}</SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-      </div>
+            <CardContent className="pt-6">
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label>Type of Fertilizer</Label>
+                  <Select
+                    value={entry.type}
+                    onValueChange={(value) => updateEntry(entry.id, 'type', value)}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select type" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {FERTILIZER_TYPES.map(type => (
+                        <SelectItem key={type} value={type}>{type}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
 
-      <div className="space-y-2">
-        <Label htmlFor="bagsPerAcre">Bags per Acre</Label>
-        <Input
-          id="bagsPerAcre"
-          type="number"
-          min="0"
-          value={data.fertilizerBagsPerAcre || ''}
-          onChange={handleChange('fertilizerBagsPerAcre')}
-        />
-      </div>
+                <div className="space-y-2">
+                  <Label>Brand</Label>
+                  <Select
+                    value={entry.brand}
+                    onValueChange={(value) => updateEntry(entry.id, 'brand', value)}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select brand" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {FERTILIZER_BRANDS.map(brand => (
+                        <SelectItem key={brand} value={brand}>{brand}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
 
-      <div className="mt-6 pt-4 border-t">
-        <div className="text-sm text-muted-foreground">
-          Total Bags Required: {totalBags.toFixed(2)}
-        </div>
-        <div className="text-sm text-muted-foreground mt-1">
-          Commission Rate: PKR {COMMISSIONS.FERTILIZER} per bag
-        </div>
-        <div className="text-lg font-semibold mt-2">
-          Commission: PKR {totalCommission.toFixed(2)}
-        </div>
+                <div className="space-y-2">
+                  <Label>Land Area (Acres)</Label>
+                  <Input
+                    type="number"
+                    min="0"
+                    value={entry.landArea || ''}
+                    onChange={(e) => updateEntry(entry.id, 'landArea', parseFloat(e.target.value) || 0)}
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label>Bags per Acre</Label>
+                  <Input
+                    type="number"
+                    min="0"
+                    value={entry.bagsPerAcre || ''}
+                    onChange={(e) => updateEntry(entry.id, 'bagsPerAcre', parseFloat(e.target.value) || 0)}
+                  />
+                </div>
+              </div>
+
+              <div className="mt-4 pt-4 border-t">
+                <div className="text-sm text-muted-foreground">
+                  Total Bags: {(entry.landArea * entry.bagsPerAcre).toFixed(2)}
+                </div>
+                <div className="text-sm text-muted-foreground mt-1">
+                  Commission Rate: PKR {COMMISSIONS.FERTILIZER} per bag
+                </div>
+                <div className="text-lg font-semibold mt-2">
+                  Commission: PKR {calculateCommission(entry).toFixed(2)}
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        ))}
+
+        {data.fertilizerEntries.length === 0 && (
+          <div className="text-center py-8 text-muted-foreground">
+            No fertilizer entries yet. Click the button above to add one.
+          </div>
+        )}
       </div>
     </div>
   );
