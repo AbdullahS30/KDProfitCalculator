@@ -7,6 +7,7 @@ import { fileURLToPath } from "url";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
+
 export default defineConfig({
   plugins: [react(), runtimeErrorOverlay(), themePlugin()],
   resolve: {
@@ -19,5 +20,15 @@ export default defineConfig({
   build: {
     outDir: path.resolve(__dirname, "dist/public"),
     emptyOutDir: true,
+  },
+  server: {
+    proxy: {
+      // This ensures all non-asset routes are redirected to index.html
+      "^(?!/assets/).*": {
+        target: "http://localhost:5000",
+        changeOrigin: true,
+        rewrite: () => "/index.html"
+      }
+    }
   },
 });
