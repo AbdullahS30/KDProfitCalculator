@@ -1,5 +1,5 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer } from "recharts";
+import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from "recharts";
 import type { CalculationResult } from "@/lib/calculate";
 
 interface ResultsDisplayProps {
@@ -8,11 +8,11 @@ interface ResultsDisplayProps {
 
 export function ResultsDisplay({ results }: ResultsDisplayProps) {
   const chartData = [
-    { name: "Fertilizer", value: results.fertilizerCommission },
-    { name: "Direct Inputs", value: results.directInputsCommission },
-    { name: "Products", value: results.productCommission },
-    { name: "Crops", value: results.cropCommission },
-    { name: "Machines", value: results.machineCommission }
+    { name: "Fertilizer", value: results.fertilizerCommission, fill: "hsl(var(--chart-1))" },
+    { name: "Direct Inputs", value: results.directInputsCommission, fill: "hsl(var(--chart-2))" },
+    { name: "Products", value: results.productCommission, fill: "hsl(var(--chart-3))" },
+    { name: "Crops", value: results.cropCommission, fill: "hsl(var(--chart-4))" },
+    { name: "Machines", value: results.machineCommission, fill: "hsl(var(--chart-5))" }
   ];
 
   return (
@@ -28,7 +28,11 @@ export function ResultsDisplay({ results }: ResultsDisplayProps) {
                 <XAxis dataKey="name" />
                 <YAxis />
                 <Tooltip />
-                <Bar dataKey="value" fill="hsl(var(--primary))" />
+                <Bar dataKey="value" radius={[4, 4, 0, 0]}>
+                  {chartData.map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={entry.fill} />
+                  ))}
+                </Bar>
               </BarChart>
             </ResponsiveContainer>
           </div>

@@ -6,7 +6,7 @@ import { Plus, X } from "lucide-react";
 import type { CalculatorInput, DirectInputEntry } from "@shared/schema";
 import { COMMISSIONS } from "@shared/schema";
 import { v4 as uuidv4 } from 'uuid';
-import { ImageSelectorDialog } from "@/components/ui/image-selector-dialog";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { directInputOptions } from "@/lib/image-options";
 
 interface Props {
@@ -78,12 +78,21 @@ export default function DirectInputsCalculator({ data, onChange }: Props) {
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label>Type</Label>
-                  <ImageSelectorDialog
-                    options={directInputOptions}
+                  <Select
                     value={entry.type}
-                    onChange={(value) => updateEntry(entry.id, 'type', value)}
-                    triggerText="Select type"
-                  />
+                    onValueChange={(value) => updateEntry(entry.id, 'type', value)}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select type" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {directInputOptions.map((option) => (
+                        <SelectItem key={option.id} value={option.id}>
+                          {option.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                 </div>
 
                 <div className="space-y-2">
@@ -109,10 +118,10 @@ export default function DirectInputsCalculator({ data, onChange }: Props) {
 
               <div className="mt-4 pt-4 border-t">
                 <div className="text-sm text-muted-foreground">
-                  Total Sales: PKR {(entry.landArea * entry.salesPerAcre).toFixed(2)}
+                  Total Sales Value: PKR {(entry.landArea * entry.salesPerAcre).toFixed(2)}
                 </div>
                 <div className="text-sm text-muted-foreground mt-1">
-                  Commission Rate: {COMMISSIONS.DIRECT_INPUTS[entry.type.toUpperCase().replace(' ', '_') as keyof typeof COMMISSIONS.DIRECT_INPUTS]}%
+                  Commission Rate: {(COMMISSIONS.DIRECT_INPUTS[entry.type.toUpperCase().replace(" ", "_") as keyof typeof COMMISSIONS.DIRECT_INPUTS] || 0).toFixed(2)}%
                 </div>
                 <div className="text-lg font-semibold mt-2">
                   Commission: PKR {calculateCommission(entry).toFixed(2)}

@@ -1,5 +1,5 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer } from "recharts";
+import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from "recharts";
 import type { CalculatorResults } from "@shared/schema";
 
 type Props = {
@@ -11,27 +11,27 @@ export default function ProfitVisualization({ results }: Props) {
     {
       name: "Fertilizer",
       commission: results.fertilizer,
-      color: "hsl(var(--chart-1))"
+      fill: "hsl(var(--chart-1))"
     },
     {
       name: "Direct Inputs",
       commission: results.directInputs,
-      color: "hsl(var(--chart-2))"
+      fill: "hsl(var(--chart-2))"
     },
     {
       name: "Products",
       commission: results.products,
-      color: "hsl(var(--chart-3))"
+      fill: "hsl(var(--chart-3))"
     },
     {
       name: "Crop Sales",
       commission: results.cropSales,
-      color: "hsl(var(--chart-4))"
+      fill: "hsl(var(--chart-4))"
     },
     {
       name: "Machine Sales",
       commission: results.machineSales,
-      color: "hsl(var(--chart-5))"
+      fill: "hsl(var(--chart-5))"
     }
   ];
 
@@ -68,8 +68,12 @@ export default function ProfitVisualization({ results }: Props) {
                 dataKey="commission"
                 fill="currentColor"
                 radius={[4, 4, 0, 0]}
-                className="fill-primary"
-              />
+                fillOpacity={0.9}
+              >
+                {data.map((entry, index) => (
+                  <Cell key={`cell-${index}`} fill={entry.fill} />
+                ))}
+              </Bar>
             </BarChart>
           </ResponsiveContainer>
         </div>

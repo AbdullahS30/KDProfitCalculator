@@ -1,5 +1,5 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { BarChart } from "@/components/ui/chart";
+import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from "recharts";
 import type { CalculatorInput } from "@shared/schema";
 import { COMMISSIONS } from "@shared/schema";
 
@@ -78,15 +78,44 @@ export default function ResultsDisplay({ data }: Props) {
         <CardTitle>Results Summary</CardTitle>
       </CardHeader>
       <CardContent>
-        <div className="mb-6">
-          <BarChart
-            data={chartData}
-            index="name"
-            categories={["value"]}
-            colors={["chart.1"]}
-            valueFormatter={(value) => `PKR ${value.toFixed(2)}`}
-            yAxisWidth={100}
-          />
+        <div className="h-[400px] sm:h-[400px] mb-6">
+          <ResponsiveContainer width="100%" height="100%">
+            <BarChart data={chartData} margin={{ top: 20, right: 0, left: -20, bottom: 0 }}>
+              <XAxis 
+                dataKey="name"
+                fontSize={12}
+                tickLine={false}
+                axisLine={false}
+                interval={0}
+                angle={-45}
+                textAnchor="end"
+                height={80}
+              />
+              <YAxis 
+                fontSize={12}
+                tickFormatter={(value) => `PKR ${value.toLocaleString()}`}
+                tickLine={false}
+                axisLine={false}
+              />
+              <Tooltip
+                formatter={(value: number) => [`PKR ${value.toLocaleString()}`, "Commission"]}
+                cursor={{ fill: "hsl(var(--muted))" }}
+              />
+              <Bar 
+                dataKey="value"
+                fill="currentColor"
+                radius={[4, 4, 0, 0]}
+                fillOpacity={0.9}
+              >
+                {chartData.map((entry, index) => (
+                  <Cell 
+                    key={`cell-${index}`} 
+                    fill={`hsl(var(--chart-${index + 1}))`}
+                  />
+                ))}
+              </Bar>
+            </BarChart>
+          </ResponsiveContainer>
         </div>
 
         <div className="space-y-4">

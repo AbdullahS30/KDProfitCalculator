@@ -1,12 +1,15 @@
 import { useState, useEffect } from "react";
-import { useRoute } from "wouter";
+import { useRoute, useLocation } from "wouter";
+import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { BarChart } from "@/components/ui/chart";
+import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from "recharts";
+import { ArrowLeft } from "lucide-react";
 import type { CalculatorInput } from "@shared/schema";
 import { COMMISSIONS } from "@shared/schema";
 
 export default function ScenarioDetails() {
   const [match, params] = useRoute("/scenarios/:id");
+  const [, setLocation] = useLocation();
   const [data, setData] = useState<CalculatorInput | null>(null);
 
   useEffect(() => {
@@ -70,34 +73,91 @@ export default function ScenarioDetails() {
   ];
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Scenario Details</CardTitle>
-      </CardHeader>
-      <CardContent>
-        <div className="mb-6">
-          <BarChart
-            data={chartData}
-            index="name"
-            categories={["value"]}
-            colors={["chart.1"]}
-            valueFormatter={(value) => `PKR ${value.toFixed(2)}`}
-            yAxisWidth={100}
-          />
-        </div>
+    <div className="container px-4 sm:px-6 py-6 space-y-6">
+      <div className="flex items-center gap-4">
+        <Button 
+          variant="ghost" 
+          size="icon"
+          onClick={() => setLocation("/scenarios")}
+        >
+          <ArrowLeft className="h-5 w-5" />
+        </Button>
+        <h1 className="text-2xl font-bold">Scenario Details</h1>
+      </div>
 
-        <div className="space-y-4">
-          <div className="flex justify-between"><span>Fertilizer Commission:</span><span>PKR {fertilizerCommission.toFixed(2)}</span></div>
-          <div className="flex justify-between"><span>Direct Inputs Commission:</span><span>PKR {directInputsCommission.toFixed(2)}</span></div>
-          <div className="flex justify-between"><span>Product Commission:</span><span>PKR {productCommission.toFixed(2)}</span></div>
-          <div className="flex justify-between"><span>Crop Sales Commission:</span><span>PKR {cropCommission.toFixed(2)}</span></div>
-          <div className="flex justify-between"><span>Machine Sales Commission:</span><span>PKR {machineCommission.toFixed(2)}</span></div>
-          <div className="pt-4 border-t flex justify-between font-bold">
-            <span>Total Commission:</span>
-            <span>PKR {totalCommission.toFixed(2)}</span>
+      <Card>
+        <CardHeader>
+          <CardTitle>Scenario Details</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="h-[400px] sm:h-[400px] mb-6">
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart data={chartData} margin={{ top: 20, right: 10, left: 10, bottom: 0 }}>
+                <XAxis 
+                  dataKey="name"
+                  fontSize={12}
+                  tickLine={false}
+                  axisLine={false}
+                  interval={0}
+                  angle={-45}
+                  textAnchor="end"
+                  height={80}
+                />
+                <YAxis 
+                  fontSize={12}
+                  tickFormatter={(value) => `PKR ${value.toLocaleString()}`}
+                  tickLine={false}
+                  axisLine={false}
+                  width={50}
+                />
+                <Tooltip
+                  formatter={(value: number) => [`PKR ${value.toLocaleString()}`, "Commission"]}
+                  cursor={{ fill: "hsl(var(--muted))" }}
+                />
+                <Bar 
+                  dataKey="value"
+                  fill="currentColor"
+                  radius={[4, 4, 0, 0]}
+                >
+                  {chartData.map((entry, index) => (
+                    <Cell 
+                      key={`cell-${index}`} 
+                      fill={`hsl(var(--chart-${index + 1}))`}
+                    />
+                  ))}
+                </Bar>
+              </BarChart>
+            </ResponsiveContainer>
           </div>
-        </div>
-      </CardContent>
-    </Card>
+
+          <div className="space-y-4 mt-8">
+            <div className="flex flex-col sm:flex-row justify-between gap-2">
+              <span className="text-sm sm:text-base">Fertilizer Commission:</span>
+              <span className="font-medium">PKR {fertilizerCommission.toFixed(2)}</span>
+            </div>
+            <div className="flex flex-col sm:flex-row justify-between gap-2">
+              <span className="text-sm sm:text-base">Direct Inputs Commission:</span>
+              <span className="font-medium">PKR {directInputsCommission.toFixed(2)}</span>
+            </div>
+            <div className="flex flex-col sm:flex-row justify-between gap-2">
+              <span className="text-sm sm:text-base">Product Commission:</span>
+              <span className="font-medium">PKR {productCommission.toFixed(2)}</span>
+            </div>
+            <div className="flex flex-col sm:flex-row justify-between gap-2">
+              <span className="text-sm sm:text-base">Crop Sales Commission:</span>
+              <span className="font-medium">PKR {cropCommission.toFixed(2)}</span>
+            </div>
+            <div className="flex flex-col sm:flex-row justify-between gap-2">
+              <span className="text-sm sm:text-base">Machine Sales Commission:</span>
+              <span className="font-medium">PKR {machineCommission.toFixed(2)}</span>
+            </div>
+            <div className="pt-4 border-t flex flex-col sm:flex-row justify-between gap-2 font-bold">
+              <span className="text-sm sm:text-base">Total Commission:</span>
+              <span>PKR {totalCommission.toFixed(2)}</span>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+    </div>
   );
 }

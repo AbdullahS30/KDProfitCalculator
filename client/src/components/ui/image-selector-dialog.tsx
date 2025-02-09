@@ -1,9 +1,10 @@
 "use client";
 
-import { Dialog, DialogContent, DialogTrigger, DialogClose } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogTrigger, DialogFooter } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { X, Check } from "lucide-react";
-import { useState } from "react";
+import { cn } from "@/lib/utils";
+import { useState, useRef, useEffect } from "react";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 interface ImageOption {
   id: string;
@@ -11,68 +12,100 @@ interface ImageOption {
   image: string;
 }
 
-interface ImageSelectorDialogProps {
+interface Props {
   options: ImageOption[];
-  value?: string;
-  onChange?: (value?: string) => void;
+  value: string;
+  onChange: (value: string) => void;
   triggerText: string;
 }
 
-export function ImageSelectorDialog({
-  options,
-  value,
-  onChange,
-  triggerText
-}: ImageSelectorDialogProps) {
+export function ImageSelectorDialog({ options, value, onChange, triggerText }: Props) {
   const [open, setOpen] = useState(false);
-  const [tempValue, setTempValue] = useState(value);
-  const selectedOption = options.find(opt => opt.id === value);
+  const [selectedId, setSelectedId] = useState(value);
+  const [centerIndex, setCenterIndex] = useState(0);
+  const scrollRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (scrollRef.current) {
+      const container = scrollRef.current;
+      const itemWidth = container.clientWidth * 0.6; // 60% of container width
+      container.scrollLeft = centerIndex * itemWidth - container.clientWidth / 2 + itemWidth / 2;
+    }
+  }, [open]);
+
+  const handleScroll = () => {
+    if (scrollRef.current) {
+      const container = scrollRef.current;
+      const scrollPosition = container.scrollLeft + container.clientWidth / 2;
+      const itemWidth = container.clientWidth * 0.6; // 60% of container width
+      const newCenterIndex = Math.round(scrollPosition / itemWidth - 0.5);
+      setCenterIndex(newCenterIndex);
+    }
+  };
 
   const handleDone = () => {
-    if (onChange) {
-      onChange(tempValue);
-    }
+    onChange(selectedId);
     setOpen(false);
   };
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button variant="outline" className="w-full justify-between">
-          <span>{value ? selectedOption?.label : triggerText}</span>
-          {selectedOption && <Check className="w-4 h-4 ml-2" />}
+        <Button variant="outline" className="w-full justify-start text-left font-normal">
+          {value ? options.find((opt) => opt.id === value)?.label : triggerText}
         </Button>
       </DialogTrigger>
-
-      {/* Centered Modal */}
-      <DialogContent className="bg-black bg-opacity-90 flex flex-col items-center justify-center p-6 w-[90vw] max-w-4xl h-[90vh]">
-        {/* Close Button */}
-        <DialogClose className="absolute top-4 right-4">
-          <X className="w-6 h-6 text-white cursor-pointer" />
-        </DialogClose>
-
-        {/* Scrollable Container */}
-        <div className="w-full max-w-full overflow-x-auto">
-          <div className="flex space-x-4 py-4 px-2 flex-nowrap">
-            {options.map((option) => (
-              <div key={option.id} className="flex flex-col items-center min-w-[12rem]">
-                <img
-                  src={option.image}
-                  alt={option.label}
-                  className={`w-48 h-48 md:w-64 md:h-64 object-contain rounded-lg transition-transform duration-300 cursor-pointer
-                    ${tempValue === option.id ? "border-4 border-blue-500" : "opacity-80 hover:scale-125 hover:opacity-100"}`}
-                  onClick={() => setTempValue(tempValue === option.id ? undefined : option.id)}
-                />
-                <span className="text-white mt-2 text-center text-sm">{option.label}</span>
+      <DialogContent className="sm:max-w-[700px] p-8 rounded-xl">
+        <ScrollArea className="h-[400px] pr-4">
+          <div
+            ref={scrollRef}
+            className="flex gap-6 overflow-x-auto snap-x snap-mandatory pb-6 scrollbar-none items-center px-12"
+            onScroll={handleScroll}
+            style={{ scrollSnapType: "x mandatory", scrollPadding: "0 20px" }}
+          >
+            {options.map((option, index) => (
+              <div
+                key={option.id}
+                className="snap-center shrink-0 transition-transform duration-300 ease-in-out flex flex-col items-center"
+                style={{
+                  minWidth: "60%", // Only one image fully visible at a time
+                  scrollSnapAlign: "center",
+                }}
+              >
+                <button
+                  onClick={() => setSelectedId(option.id)}
+                  className={cn(
+                    "flex flex-col items-center gap-3 p-4 rounded-lg transition-all duration-300 ease-in-out",
+                    "hover:bg-accent hover:text-accent-foreground",
+                    selectedId === option.id && "bg-accent text-accent-foreground",
+                    index === centerIndex
+                      ? "scale-[1.4] shadow-2xl z-10 transform translate-y-0"
+                      : "scale-75 opacity-50 transform translate-y-6"
+                  )}
+                >
+                  <img
+                    src={option.image}
+                    alt={option.label}
+                    className="w-36 h-36 sm:w-40 sm:h-40 object-contain rounded-md transition-transform duration-300"
+                  />
+                  <span
+                    className={cn(
+                      "text-base sm:text-lg font-medium transition-opacity duration-300",
+                      index === centerIndex ? "opacity-100" : "opacity-50"
+                    )}
+                  >
+                    {option.label}
+                  </span>
+                </button>
               </div>
             ))}
           </div>
-        </div>
-
-        {/* Done Button */}
-        <Button className="mt-6" onClick={handleDone}>
-          Done
-        </Button>
+        </ScrollArea>
+        <DialogFooter>
+          <Button onClick={handleDone} className="px-6 py-3 text-lg">
+            Done
+          </Button>
+        </DialogFooter>
       </DialogContent>
     </Dialog>
   );

@@ -8,6 +8,7 @@ import { COMMISSIONS } from "@shared/schema";
 import { v4 as uuidv4 } from 'uuid';
 import { fertilizerOptions, brandOptions } from "@/lib/image-options"; // Keep brandOptions for now
 import { ImageSelectorDialog } from "../ui/image-selector-dialog";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 interface Props {
   data: CalculatorInput;
@@ -78,18 +79,21 @@ export default function FertilizerCalculator({ data, onChange }: Props) {
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label>Type of Fertilizer</Label>
-                  <select
-                    className="w-full p-2 border rounded-md"
+                  <Select
                     value={entry.type}
-                    onChange={(e) => updateEntry(entry.id, 'type', e.target.value)}
+                    onValueChange={(value) => updateEntry(entry.id, 'type', value)}
                   >
-                    <option value="" disabled>Select Fertilizer</option>
-                    {fertilizerOptions.map((option) => (
-                      <option key={option.value} value={option.value}>
-                        {option.label}
-                      </option>
-                    ))}
-                  </select>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select Fertilizer" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {fertilizerOptions.map((option) => (
+                        <SelectItem key={option.id} value={option.id}>
+                          {option.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                 </div>
 
                 <div className="space-y-2">

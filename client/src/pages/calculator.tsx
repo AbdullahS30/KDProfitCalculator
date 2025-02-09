@@ -12,6 +12,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import type { CalculatorInput } from "@shared/schema";
+import { Link } from "wouter";
+import { ArrowLeft } from "lucide-react";
 
 export default function Calculator() {
   const [calculatorData, setCalculatorData] = useState<CalculatorInput>({
@@ -52,8 +54,20 @@ export default function Calculator() {
   };
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold mb-8">KDukaan Profit Calculator</h1>
+    <div className="container mx-auto px-1 sm:px-4 py-2 sm:py-8">
+      <div className="flex items-center gap-4 mb-4">
+        <Button
+          variant="ghost"
+          size="icon"
+          asChild
+          className="h-8 w-8"
+        >
+          <Link href="/">
+            <ArrowLeft className="h-4 w-4" />
+          </Link>
+        </Button>
+        <h1 className="text-xl sm:text-3xl font-bold">KDukaan Profit Calculator</h1>
+      </div>
 
       <div className="grid md:grid-cols-2 gap-8">
         <Card>

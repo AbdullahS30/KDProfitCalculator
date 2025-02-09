@@ -1,6 +1,6 @@
 import * as React from "react"
 import * as RechartsPrimitive from "recharts"
-import { ResponsiveContainer, BarChart as RechartsBarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip } from "recharts"
+import { ResponsiveContainer, BarChart as RechartsBarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Cell } from "recharts"
 import { cn } from "@/lib/utils"
 
 // Format: { THEME_NAME: CSS_SELECTOR }
@@ -375,7 +375,7 @@ export function BarChart({
   data,
   index,
   categories,
-  colors = ["chart.1"],
+  colors,
   valueFormatter = (value: number) => value.toString(),
   yAxisWidth = 56,
 }: BarChartProps) {
@@ -401,7 +401,7 @@ export function BarChart({
           />
           <Tooltip
             content={({ active, payload }) => {
-              if (!active || !payload) return null
+              if (!active || !payload) return null;
               return (
                 <div className="rounded-lg border bg-background p-2 shadow-sm">
                   <div className="grid grid-cols-2 gap-2">
@@ -417,19 +417,25 @@ export function BarChart({
                     ))}
                   </div>
                 </div>
-              )
+              );
             }}
           />
           {categories.map((category, i) => (
             <Bar
               key={category}
               dataKey={category}
-              fill={`hsl(var(--${colors[i % colors.length]}))`}
               radius={[4, 4, 0, 0]}
-            />
+            >
+              {data.map((entry, index) => (
+                <Cell 
+                  key={`cell-${index}`} 
+                  fill={`hsl(var(--chart-${index + 1}))`}
+                />
+              ))}
+            </Bar>
           ))}
         </RechartsBarChart>
       </ResponsiveContainer>
     </div>
-  )
+  );
 }

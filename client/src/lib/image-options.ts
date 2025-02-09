@@ -39,23 +39,23 @@ export const directInputOptions = [
 ];
 
 export const productOptions = [
-  { id: 'Wanda', label: 'Wanda', image: generateSvgImage('#8b5cf6') },
-  { id: 'Silage', label: 'Silage', image: generateSvgImage('#f59e0b') },
-  { id: 'Chaukar', label: 'Chaukar', image: generateSvgImage('#84cc16') },
-  { id: 'Solar Panels', label: 'Solar Panels', image: generateSvgImage('#0ea5e9') },
-  { id: 'Tractor', label: 'Tractor', image: generateSvgImage('#dc2626') },
+  { id: 'Wanda', label: 'Wanda', image: "/images/wanda.png" },
+  { id: 'Silage', label: 'Silage', image: "/images/silage.png" },
+  { id: 'Chaukar', label: 'Chaukar', image: "/images/chaukar.png" },
+  { id: 'Solar Panels', label: 'Solar Panels', image: "/images/solarPanel.png" },
+  { id: 'Tractor', label: 'Tractor', image: "/images/tractor.png" },
 ];
 
 export const cropOptions = [
-  { id: 'Wheat', label: 'Wheat', image: generateSvgImage('#f59e0b') },
-  { id: 'Rice', label: 'Rice', image: generateSvgImage('#84cc16') },
-  { id: 'Maize', label: 'Maize', image: generateSvgImage('#fbbf24') },
-  { id: 'Cotton', label: 'Cotton', image: generateSvgImage('#f9fafb') },
+  { id: 'Wheat', label: 'Wheat', image: "/images/wheat.png" },
+  { id: 'Rice', label: 'Rice', image: "/images/rice.png" },
+  { id: 'Maize', label: 'Maize', image: "/images/maize.png" },
+  { id: 'Cotton', label: 'Cotton', image: "/images/cotton.png" },
 ];
 
 export const machineOptions = [
-  { id: 'Harvester', label: 'Harvester', image: generateSvgImage('#dc2626') },
-  { id: 'Thresher', label: 'Thresher', image: generateSvgImage('#2563eb') },
-  { id: 'Trolley', label: 'Trolley', image: generateSvgImage('#059669') },
-  { id: 'Rice Planter', label: 'Rice Planter', image: generateSvgImage('#7c3aed') },
+  { id: 'Harvester', label: 'Harvester', image: "/images/harvester.png" },
+  { id: 'Thresher', label: 'Thresher', image: "/images/thresher.png" },
+  { id: 'Trolley', label: 'Trolley', image: "/images/trolley.png"},
+  { id: 'Rice Planter', label: 'Rice Planter', image: "/images/ricePlanter.png" },
 ];
