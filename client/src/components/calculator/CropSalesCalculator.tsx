@@ -126,7 +126,7 @@ export default function CropSalesCalculator({ data, onChange }: Props) {
                   Total Value: PKR {(entry.landArea * entry.yieldPerAcre * entry.pricePerMaund).toFixed(2)}
                 </div>
                 <div className="text-sm text-muted-foreground mt-1">
-                  Commission Rate: {(COMMISSIONS.CROP[entry.type.toUpperCase() as keyof typeof COMMISSIONS.CROP] * 100).toFixed(2)}%
+                  Commission Rate: {(COMMISSIONS.CROP[entry.type.toUpperCase() as keyof typeof COMMISSIONS.CROP]).toFixed(2)}%
                 </div>
                 <div className="text-lg font-semibold mt-2">
                   Commission: PKR {calculateCommission(entry).toFixed(2)}
