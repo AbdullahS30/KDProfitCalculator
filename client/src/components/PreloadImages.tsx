@@ -7,7 +7,8 @@ export function PreloadImages() {
       ...brandOptions,
       ...cropOptions,
       ...productOptions,
-      ...machineOptions
+      ...machineOptions,
+      { image: '/images/Dukaan Final Logo-01.png' }
     ].map(option => option.image);
 
     allImages.forEach(imageSrc => {
