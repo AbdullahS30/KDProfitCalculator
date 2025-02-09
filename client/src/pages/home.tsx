@@ -7,6 +7,12 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-background p-4 md:p-8">
       <div className="max-w-4xl mx-auto space-y-8">
+        
+        {/* Logo Section */}
+        <div className="flex justify-center">
+          <img src="/images/Dukaan Final Logo-01.png" alt="KDukaan Logo" className="h-40 w-auto" />
+        </div>
+        {/* dist/public/images/ */}
         <header className="text-center space-y-4">
           <h1 className="text-4xl font-bold tracking-tight">KDukaan Profit Calculator</h1>
           <p className="text-muted-foreground">

@@ -27,9 +27,9 @@ export const fertilizerOptions = [
 ];
 
 export const brandOptions = [
-  { id: 'Engro', label: 'Engro', image: generateSvgImage('#10b981') },
-  { id: 'FFC', label: 'FFC', image: generateSvgImage('#3b82f6') },
-  { id: 'Fatima', label: 'Fatima', image: generateSvgImage('#f97316') },
+  { id: 'Engro', label: 'Engro', image: "/images/engro.png" },
+  { id: 'FFC', label: 'FFC', image: "/images/ffc.png" },
+  { id: 'Fatima', label: 'Fatima', image: "/images/fatima.png" },
 ];
 
 export const directInputOptions = [

@@ -6,8 +6,8 @@ import { Plus, X } from "lucide-react";
 import type { CalculatorInput, FertilizerEntry } from "@shared/schema";
 import { COMMISSIONS } from "@shared/schema";
 import { v4 as uuidv4 } from 'uuid';
-import { ImageSelectorDialog } from "@/components/ui/image-selector-dialog";
-import { fertilizerOptions, brandOptions } from "@/lib/image-options";
+import { fertilizerOptions, brandOptions } from "@/lib/image-options"; // Keep brandOptions for now
+import { ImageSelectorDialog } from "../ui/image-selector-dialog";
 
 interface Props {
   data: CalculatorInput;
@@ -78,12 +78,18 @@ export default function FertilizerCalculator({ data, onChange }: Props) {
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label>Type of Fertilizer</Label>
-                  <ImageSelectorDialog
-                    options={fertilizerOptions}
+                  <select
+                    className="w-full p-2 border rounded-md"
                     value={entry.type}
-                    onChange={(value) => updateEntry(entry.id, 'type', value)}
-                    triggerText="Select type"
-                  />
+                    onChange={(e) => updateEntry(entry.id, 'type', e.target.value)}
+                  >
+                    <option value="" disabled>Select Fertilizer</option>
+                    {fertilizerOptions.map((option) => (
+                      <option key={option.value} value={option.value}>
+                        {option.label}
+                      </option>
+                    ))}
+                  </select>
                 </div>
 
                 <div className="space-y-2">
