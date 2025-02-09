@@ -57,20 +57,6 @@ export default function Home() {
             </CardContent>
           </Card>
 
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <ChartBar className="h-5 w-5" />
-                Reports
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-sm text-muted-foreground mb-4">
-                Analyze trends and optimize your sales strategy
-              </p>
-              <Button variant="outline" className="w-full">View Reports</Button>
-            </CardContent>
-          </Card>
         </div>
       </div>
     </div>

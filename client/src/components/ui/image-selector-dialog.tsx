@@ -28,7 +28,7 @@ export function ImageSelectorDialog({ options, value, onChange, triggerText }: P
   useEffect(() => {
     if (scrollRef.current) {
       const container = scrollRef.current;
-      const itemWidth = container.clientWidth * 0.6; // 60% of container width
+      const itemWidth = container.clientWidth * 0.6;
       container.scrollLeft = centerIndex * itemWidth - container.clientWidth / 2 + itemWidth / 2;
     }
   }, [open]);
@@ -37,7 +37,7 @@ export function ImageSelectorDialog({ options, value, onChange, triggerText }: P
     if (scrollRef.current) {
       const container = scrollRef.current;
       const scrollPosition = container.scrollLeft + container.clientWidth / 2;
-      const itemWidth = container.clientWidth * 0.6; // 60% of container width
+      const itemWidth = container.clientWidth * 0.6;
       const newCenterIndex = Math.round(scrollPosition / itemWidth - 0.5);
       setCenterIndex(newCenterIndex);
     }
@@ -55,8 +55,8 @@ export function ImageSelectorDialog({ options, value, onChange, triggerText }: P
           {value ? options.find((opt) => opt.id === value)?.label : triggerText}
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[700px] p-8 rounded-xl">
-        <ScrollArea className="h-[400px] pr-4">
+      <DialogContent className="sm:max-w-[750px] p-8 rounded-xl">
+        <ScrollArea className="h-[450px] pr-4 flex items-center">
           <div
             ref={scrollRef}
             className="flex gap-6 overflow-x-auto snap-x snap-mandatory pb-6 scrollbar-none items-center px-12"
@@ -66,32 +66,33 @@ export function ImageSelectorDialog({ options, value, onChange, triggerText }: P
             {options.map((option, index) => (
               <div
                 key={option.id}
-                className="snap-center shrink-0 transition-transform duration-300 ease-in-out flex flex-col items-center"
+                className="snap-center shrink-0 transition-transform duration-300 ease-in-out flex flex-col items-center justify-center"
                 style={{
-                  minWidth: "60%", // Only one image fully visible at a time
+                  minWidth: "60%",
                   scrollSnapAlign: "center",
+                  height: index === centerIndex ? "280px" : "220px", // Reduced enlargement slightly
                 }}
               >
                 <button
                   onClick={() => setSelectedId(option.id)}
                   className={cn(
-                    "flex flex-col items-center gap-3 p-4 rounded-lg transition-all duration-300 ease-in-out",
+                    "flex flex-col items-center gap-4 p-4 rounded-lg transition-all duration-300 ease-in-out",
                     "hover:bg-accent hover:text-accent-foreground",
-                    selectedId === option.id && "bg-accent text-accent-foreground",
+                    selectedId === option.id && "bg-accent",
                     index === centerIndex
-                      ? "scale-[1.4] shadow-2xl z-10 transform translate-y-0"
-                      : "scale-75 opacity-50 transform translate-y-6"
+                      ? "scale-[1.3] shadow-2xl z-10 transform translate-y-0"
+                      : "scale-80 opacity-50 transform translate-y-4"
                   )}
                 >
                   <img
                     src={option.image}
                     alt={option.label}
-                    className="w-36 h-36 sm:w-40 sm:h-40 object-contain rounded-md transition-transform duration-300"
+                    className="w-40 h-40 sm:w-44 sm:h-44 object-contain rounded-md transition-transform duration-300"
                   />
                   <span
                     className={cn(
-                      "text-base sm:text-lg font-medium transition-opacity duration-300",
-                      index === centerIndex ? "opacity-100" : "opacity-50"
+                      "text-base sm:text-lg font-medium transition-colors duration-300",
+                      selectedId === option.id ? "text-white" : "text-[#6832a8]" // Purple before selection
                     )}
                   >
                     {option.label}
