@@ -1,14 +1,30 @@
 import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Calculator, ChartBar, History } from "lucide-react";
+import { Calculator, ChartBar, History, Loader2 } from "lucide-react";
 import { PreloadImages } from "@/components/PreloadImages";
+import { useState } from "react";
+import { cn } from "@/lib/utils";
 
 export default function Home() {
+  const [isLoading, setIsLoading] = useState(true);
+
   return (
     <div className="min-h-screen bg-background p-4 md:p-8">
-      <PreloadImages />
-      <div className="max-w-4xl mx-auto space-y-8">
+      <PreloadImages onLoadComplete={() => setIsLoading(false)} />
+      
+      <div className={cn(
+        "max-w-4xl mx-auto space-y-8 transition-opacity duration-300",
+        isLoading ? "opacity-0" : "opacity-100"
+      )}>
+        {isLoading && (
+          <div className="absolute inset-0 flex items-center justify-center">
+            <div className="flex flex-col items-center gap-4">
+              <Loader2 className="h-8 w-8 animate-spin text-primary" />
+              <p className="text-sm text-muted-foreground">Loading resources...</p>
+            </div>
+          </div>
+        )}
         
         {/* Logo Section */}
         <div className="flex justify-center">
