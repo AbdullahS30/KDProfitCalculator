@@ -3,7 +3,7 @@ import { useRoute, useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from "recharts";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, Edit } from "lucide-react";
 import type { CalculatorInput } from "@shared/schema";
 import { COMMISSIONS } from "@shared/schema";
 
@@ -11,6 +11,7 @@ export default function ScenarioDetails() {
   const [match, params] = useRoute("/scenarios/:id");
   const [, setLocation] = useLocation();
   const [data, setData] = useState<CalculatorInput | null>(null);
+  const [scenarioName, setScenarioName] = useState<string>("");
 
   useEffect(() => {
     if (!match || !params?.id) return;
@@ -20,8 +21,23 @@ export default function ScenarioDetails() {
 
     if (scenario) {
       setData(scenario.data);
+      setScenarioName(scenario.name);
     }
   }, [match, params?.id]);
+
+  const handleEdit = () => {
+    if (!data || !params?.id) return;
+    
+    // Store the current scenario in sessionStorage for editing
+    sessionStorage.setItem("editingScenario", JSON.stringify({
+      id: params.id,
+      name: scenarioName,
+      data: data
+    }));
+    
+    // Navigate to calculator with edit mode
+    setLocation("/calculator?mode=edit");
+  };
 
   if (!data) {
     return <p className="text-center text-gray-500">No data found for this scenario.</p>;
@@ -74,15 +90,21 @@ export default function ScenarioDetails() {
 
   return (
     <div className="container px-4 sm:px-6 py-6 space-y-6">
-      <div className="flex items-center gap-4">
-        <Button 
-          variant="ghost" 
-          size="icon"
-          onClick={() => setLocation("/scenarios")}
-        >
-          <ArrowLeft className="h-5 w-5" />
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-4">
+          <Button 
+            variant="ghost" 
+            size="icon"
+            onClick={() => setLocation("/scenarios")}
+          >
+            <ArrowLeft className="h-5 w-5" />
+          </Button>
+          <h1 className="text-2xl font-bold">{scenarioName}</h1>
+        </div>
+        <Button onClick={handleEdit} className="gap-2">
+          <Edit className="h-4 w-4" />
+          Edit Scenario
         </Button>
-        <h1 className="text-2xl font-bold">Scenario Details</h1>
       </div>
 
       <Card>

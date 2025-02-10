@@ -77,7 +77,6 @@ export function ImageSelectorDialog({ options, value, onChange, triggerText }: P
                   onClick={() => setSelectedId(option.id)}
                   className={cn(
                     "flex flex-col items-center gap-4 p-4 rounded-lg transition-all duration-300 ease-in-out",
-                    "hover:bg-accent hover:text-accent-foreground",
                     selectedId === option.id && "bg-accent",
                     index === centerIndex
                       ? "scale-[1.3] shadow-2xl z-10 transform translate-y-0"

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useLocation } from "wouter"; // Use useLocation for navigation
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent } from "@/components/ui/card";
@@ -16,41 +16,97 @@ import { Link } from "wouter";
 import { ArrowLeft } from "lucide-react";
 
 export default function Calculator() {
-  const [calculatorData, setCalculatorData] = useState<CalculatorInput>({
-    fertilizerEntries: [],
-    directInputEntries: [],
-    productEntries: [],
-    cropEntries: [],
-    machineEntries: [],
+  // Add console.log to debug
+  const editingScenario = sessionStorage.getItem("editingScenario");
+  console.log("Editing Scenario:", editingScenario);
+
+  const [calculatorData, setCalculatorData] = useState<CalculatorInput>(() => {
+    if (editingScenario) {
+      const scenario = JSON.parse(editingScenario);
+      // Don't remove the session storage immediately
+      // sessionStorage.removeItem("editingScenario"); // Remove this line
+      return scenario.data;
+    }
+    return {
+      fertilizerEntries: [],
+      directInputEntries: [],
+      productEntries: [],
+      cropEntries: [],
+      machineEntries: [],
+    };
   });
 
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [scenarioName, setScenarioName] = useState("");
+  const [isSaveAsNew, setIsSaveAsNew] = useState(false);
+  const [showConfirmation, setShowConfirmation] = useState(false);
+  const [savedScenarioId, setSavedScenarioId] = useState<string | null>(null);
+  const [scenarioName, setScenarioName] = useState(() => {
+    if (editingScenario) {
+      const scenario = JSON.parse(editingScenario);
+      return scenario.name;
+    }
+    return "";
+  });
+  
+  const [editingId, setEditingId] = useState(() => {
+    if (editingScenario) {
+      const scenario = JSON.parse(editingScenario);
+      return scenario.id;
+    }
+    return null;
+  });
 
-  const [, setLocation] = useLocation(); // Use setLocation to navigate
+  // Remove session storage after all state is initialized
+  useEffect(() => {
+    if (editingScenario) {
+      sessionStorage.removeItem("editingScenario");
+    }
+  }, []);
 
-  // Function to save scenario locally
-  const saveScenario = () => {
-    setIsModalOpen(true);
+  const [, setLocation] = useLocation();
+
+  const saveScenario = (saveAsNew: boolean = false) => {
+    if (saveAsNew || !editingId) {
+      setIsSaveAsNew(true);
+      setIsModalOpen(true);
+    } else {
+      handleSaveScenario(false);
+    }
   };
 
-  const handleSaveScenario = () => {
-    if (!scenarioName.trim()) return; // Prevent empty names
-
+  const handleSaveScenario = (asNew: boolean = false) => {
     const scenarios = JSON.parse(localStorage.getItem("scenarios") || "[]");
+    let scenarioId: string;
+    
+    if (!asNew && editingId) {
+      scenarioId = editingId;
+      const updatedScenarios = scenarios.map((s: any) => 
+        s.id === editingId 
+          ? { ...s, name: scenarioName, data: calculatorData }
+          : s
+      );
+      localStorage.setItem("scenarios", JSON.stringify(updatedScenarios));
+    } else {
+      if (!scenarioName.trim()) return;
+      
+      scenarioId = Date.now().toString();
+      const newScenario = {
+        id: scenarioId,
+        name: scenarioName.trim(),
+        data: calculatorData,
+      };
+      localStorage.setItem("scenarios", JSON.stringify([...scenarios, newScenario]));
+    }
 
-    const newScenario = {
-      id: Date.now().toString(),
-      name: scenarioName.trim(),
-      data: { ...calculatorData },
-    };
-
-    localStorage.setItem("scenarios", JSON.stringify([...scenarios, newScenario]));
     setIsModalOpen(false);
-    setScenarioName(""); // Reset input
-
-    // Navigate to home after saving
-    setLocation("/");
+    setSavedScenarioId(scenarioId);
+    setShowConfirmation(true);
+    
+    // Navigate after delay
+    setTimeout(() => {
+      setShowConfirmation(false);
+      setLocation(`/scenarios/${scenarioId}`);
+    }, 2000);
   };
 
   return (
@@ -106,17 +162,30 @@ export default function Calculator() {
 
         <div className="space-y-4">
           <ResultsDisplay data={calculatorData} />
-          <Button className="w-full" onClick={saveScenario}>
-            Save Scenario
-          </Button>
+          <div className="flex gap-4">
+            <Button 
+              className="flex-1" 
+              onClick={() => saveScenario(false)}
+            >
+              {editingId ? 'Save Changes' : 'Save Scenario'}
+            </Button>
+            {editingId && (
+              <Button 
+                className="flex-1" 
+                variant="outline" 
+                onClick={() => saveScenario(true)}
+              >
+                Save as New
+              </Button>
+            )}
+          </div>
         </div>
       </div>
 
-      {/* Save Scenario Modal */}
       <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Save Scenario</DialogTitle>
+            <DialogTitle>Save {isSaveAsNew ? 'New' : ''} Scenario</DialogTitle>
           </DialogHeader>
           <Input
             type="text"
@@ -126,9 +195,28 @@ export default function Calculator() {
             className="w-full"
           />
           <DialogFooter>
-            <Button variant="outline" onClick={() => setIsModalOpen(false)}>Cancel</Button>
-            <Button onClick={handleSaveScenario} disabled={!scenarioName.trim()}>Save</Button>
+            <Button variant="outline" onClick={() => {
+              setIsModalOpen(false);
+              setIsSaveAsNew(false);
+            }}>
+              Cancel
+            </Button>
+            <Button 
+              onClick={() => handleSaveScenario(isSaveAsNew)} 
+              disabled={!scenarioName.trim()}
+            >
+              Save
+            </Button>
           </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={showConfirmation} onOpenChange={setShowConfirmation}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Success!</DialogTitle>
+          </DialogHeader>
+          <p>Scenario saved successfully!</p>
         </DialogContent>
       </Dialog>
     </div>
