@@ -65,6 +65,15 @@ export default function Calculator() {
 
   const [, setLocation] = useLocation();
 
+  const handleBack = () => {
+    if (editingScenario) {
+      const scenario = JSON.parse(editingScenario);
+      setLocation(`/scenarios/${scenario.id}`);
+    } else {
+      setLocation("/");
+    }
+  };
+
   const saveScenario = (saveAsNew: boolean = false) => {
     if (saveAsNew || !editingId) {
       setIsSaveAsNew(true);
@@ -115,8 +124,7 @@ export default function Calculator() {
         <Button
           variant="ghost"
           size="icon"
-          asChild
-          className="h-8 w-8"
+          onClick={handleBack}
         >
           <Link href="/">
             <ArrowLeft className="h-4 w-4" />

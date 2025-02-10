@@ -3,16 +3,25 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Calculator, ChartBar, History, Loader2 } from "lucide-react";
 import { PreloadImages } from "@/components/PreloadImages";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { cn } from "@/lib/utils";
 import { Skeleton } from "@/components/ui/skeleton";
 
 export default function Home() {
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(() => {
+    const hasLoaded = sessionStorage.getItem("hasLoadedHome");
+    return !hasLoaded;
+  });
+
+  useEffect(() => {
+    if (!isLoading) {
+      sessionStorage.setItem("hasLoadedHome", "true");
+    }
+  }, [isLoading]);
 
   return (
     <div className="min-h-screen bg-background p-4 md:p-8">
-      <PreloadImages onLoadComplete={() => setIsLoading(false)} />
+      {isLoading && <PreloadImages onLoadComplete={() => setIsLoading(false)} />}
       
       <div className="max-w-4xl mx-auto space-y-8">
         {/* Logo Section */}
