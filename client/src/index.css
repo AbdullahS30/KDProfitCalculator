@@ -34,11 +34,11 @@
     --radius: 0.5rem;
     
     /* Keep your existing chart colors */
-    --chart-1: 221.2 83.2% 53.3%;    /* blue */
-    --chart-2: 142.1 76.2% 36.3%;    /* green */
-    --chart-3: 346.8 77.2% 49.8%;    /* red */
-    --chart-4: 47.9 95.8% 53.1%;     /* yellow */
-    --chart-5: 262.1 83.3% 57.8%;    /* purple */
+    --chart-1: 267, 54%, 43%;  /* Purple */
+    --chart-2: 22, 98%, 50%;   /* Orange */
+    --chart-3: 267, 54%, 43%;  /* Purple */
+    --chart-4: 22, 98%, 50%;   /* Orange */
+    --chart-5: 267, 54%, 43%;  /* Purple */
   }
 }
 

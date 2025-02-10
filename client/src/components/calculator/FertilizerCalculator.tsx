@@ -9,6 +9,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { fertilizerOptions, brandOptions } from "@/lib/image-options"; // Keep brandOptions for now
 import { ImageSelectorDialog } from "../ui/image-selector-dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { NumberSlider } from "@/components/ui/number-slider";
 
 interface Props {
   data: CalculatorInput;
@@ -76,7 +77,7 @@ export default function FertilizerCalculator({ data, onChange }: Props) {
             </Button>
 
             <CardContent className="pt-6">
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid gap-4">
                 <div className="space-y-2">
                   <Label>Type of Fertilizer</Label>
                   <Select
@@ -106,25 +107,23 @@ export default function FertilizerCalculator({ data, onChange }: Props) {
                   />
                 </div>
 
-                <div className="space-y-2">
-                  <Label>Land Area (Acres)</Label>
-                  <Input
-                    type="number"
-                    min="0"
-                    value={entry.landArea || ''}
-                    onChange={(e) => updateEntry(entry.id, 'landArea', parseFloat(e.target.value) || 0)}
-                  />
-                </div>
+                <NumberSlider
+                  label="Land Area (Acres)"
+                  value={entry.landArea}
+                  onChange={(value) => updateEntry(entry.id, 'landArea', value)}
+                  min={0}
+                  max={1000}
+                  step={1}
+                />
 
-                <div className="space-y-2">
-                  <Label>Bags per Acre</Label>
-                  <Input
-                    type="number"
-                    min="0"
-                    value={entry.bagsPerAcre || ''}
-                    onChange={(e) => updateEntry(entry.id, 'bagsPerAcre', parseFloat(e.target.value) || 0)}
-                  />
-                </div>
+                <NumberSlider
+                  label="Bags per Acre"
+                  value={entry.bagsPerAcre}
+                  onChange={(value) => updateEntry(entry.id, 'bagsPerAcre', value)}
+                  min={0}
+                  max={10}
+                  step={0.5}
+                />
               </div>
 
               <div className="mt-4 pt-4 border-t">

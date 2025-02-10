@@ -8,6 +8,7 @@ import { COMMISSIONS } from "@shared/schema";
 import { v4 as uuidv4 } from 'uuid';
 import { ImageSelectorDialog } from "@/components/ui/image-selector-dialog";
 import { productOptions } from "@/lib/image-options";
+import { NumberSlider } from "@/components/ui/number-slider";
 
 interface Props {
   data: CalculatorInput;
@@ -75,7 +76,7 @@ export default function ProductBasedCalculator({ data, onChange }: Props) {
             </Button>
 
             <CardContent className="pt-6">
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid gap-4">
                 <div className="space-y-2">
                   <Label>Product Type</Label>
                   <ImageSelectorDialog
@@ -86,25 +87,23 @@ export default function ProductBasedCalculator({ data, onChange }: Props) {
                   />
                 </div>
 
-                <div className="space-y-2">
-                  <Label>Quantity</Label>
-                  <Input
-                    type="number"
-                    min="0"
-                    value={entry.quantity || ''}
-                    onChange={(e) => updateEntry(entry.id, 'quantity', parseFloat(e.target.value) || 0)}
-                  />
-                </div>
+                <NumberSlider
+                  label="Quantity"
+                  value={entry.quantity}
+                  onChange={(value) => updateEntry(entry.id, 'quantity', value)}
+                  min={0}
+                  max={1000}
+                  step={1}
+                />
 
-                <div className="space-y-2 col-span-2">
-                  <Label>Sales Value per Unit (PKR)</Label>
-                  <Input
-                    type="number"
-                    min="0"
-                    value={entry.salesValue || ''}
-                    onChange={(e) => updateEntry(entry.id, 'salesValue', parseFloat(e.target.value) || 0)}
-                  />
-                </div>
+                <NumberSlider
+                  label="Sales Value per Unit (PKR)"
+                  value={entry.salesValue}
+                  onChange={(value) => updateEntry(entry.id, 'salesValue', value)}
+                  min={0}
+                  max={100000}
+                  step={100}
+                />
               </div>
 
               <div className="mt-4 pt-4 border-t">

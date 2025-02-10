@@ -8,6 +8,7 @@ import { COMMISSIONS } from "@shared/schema";
 import { v4 as uuidv4 } from 'uuid';
 import { ImageSelectorDialog } from "@/components/ui/image-selector-dialog";
 import { machineOptions } from "@/lib/image-options";
+import { NumberSlider } from "@/components/ui/number-slider";
 
 interface Props {
   data: CalculatorInput;
@@ -101,15 +102,14 @@ export default function MachineSalesCalculator({ data, onChange }: Props) {
                   />
                 </div>
 
-                <div className="space-y-2">
-                  <Label>Land Area (Acres)</Label>
-                  <Input
-                    type="number"
-                    min="0"
-                    value={entry.landArea || ''}
-                    onChange={(e) => updateEntry(entry.id, 'landArea', parseFloat(e.target.value) || 0)}
-                  />
-                </div>
+                <NumberSlider
+                  label="Land Area (Acres)"
+                  value={entry.landArea}
+                  onChange={(value) => updateEntry(entry.id, 'landArea', value)}
+                  min={0}
+                  max={1000}
+                  step={1}
+                />
               </div>
 
               <div className="mt-4 pt-4 border-t">

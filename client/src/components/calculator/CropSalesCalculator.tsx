@@ -8,6 +8,7 @@ import { COMMISSIONS } from "@shared/schema";
 import { v4 as uuidv4 } from 'uuid';
 import { ImageSelectorDialog } from "@/components/ui/image-selector-dialog";
 import { cropOptions } from "@/lib/image-options";
+import { NumberSlider } from "@/components/ui/number-slider";
 
 interface Props {
   data: CalculatorInput;
@@ -76,7 +77,7 @@ export default function CropSalesCalculator({ data, onChange }: Props) {
             </Button>
 
             <CardContent className="pt-6">
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid gap-4">
                 <div className="space-y-2">
                   <Label>Crop Type</Label>
                   <ImageSelectorDialog
@@ -87,35 +88,32 @@ export default function CropSalesCalculator({ data, onChange }: Props) {
                   />
                 </div>
 
-                <div className="space-y-2">
-                  <Label>Land Area (Acres)</Label>
-                  <Input
-                    type="number"
-                    min="0"
-                    value={entry.landArea || ''}
-                    onChange={(e) => updateEntry(entry.id, 'landArea', parseFloat(e.target.value) || 0)}
-                  />
-                </div>
+                <NumberSlider
+                  label="Land Area (Acres)"
+                  value={entry.landArea}
+                  onChange={(value) => updateEntry(entry.id, 'landArea', value)}
+                  min={0}
+                  max={1000}
+                  step={1}
+                />
 
-                <div className="space-y-2">
-                  <Label>Yield per Acre (Maunds)</Label>
-                  <Input
-                    type="number"
-                    min="0"
-                    value={entry.yieldPerAcre || ''}
-                    onChange={(e) => updateEntry(entry.id, 'yieldPerAcre', parseFloat(e.target.value) || 0)}
-                  />
-                </div>
+                <NumberSlider
+                  label="Yield per Acre (Maunds)"
+                  value={entry.yieldPerAcre}
+                  onChange={(value) => updateEntry(entry.id, 'yieldPerAcre', value)}
+                  min={0}
+                  max={100}
+                  step={0.5}
+                />
 
-                <div className="space-y-2">
-                  <Label>Price per Maund (PKR)</Label>
-                  <Input
-                    type="number"
-                    min="0"
-                    value={entry.pricePerMaund || ''}
-                    onChange={(e) => updateEntry(entry.id, 'pricePerMaund', parseFloat(e.target.value) || 0)}
-                  />
-                </div>
+                <NumberSlider
+                  label="Price per Maund (PKR)"
+                  value={entry.pricePerMaund}
+                  onChange={(value) => updateEntry(entry.id, 'pricePerMaund', value)}
+                  min={0}
+                  max={10000}
+                  step={100}
+                />
               </div>
 
               <div className="mt-4 pt-4 border-t">
